@@ -15,25 +15,25 @@ import java.io.IOException;
 
 public class Game {
     final private Terminal terminal = new DefaultTerminalFactory().createTerminal();
-    final private Screen screen = new TerminalScreen(terminal);
+    final public Screen screen = new TerminalScreen(terminal);
+    final private Hero hero = new Hero(10,10);
 
-    private int x = 10;
-    private int y = 10;
+    private void moveHero(Position position) {
+        hero.setPosition(position);
+    }
 
     private void processKey(KeyStroke key) {
         if (key.getKeyType()== KeyType.ArrowUp) {
-            y -= 1;
+            moveHero(hero.moveUp());
         } else if (key.getKeyType()== KeyType.ArrowDown) {
-            y += 1;
+            moveHero(hero.moveDown());
         } else if (key.getKeyType()== KeyType.ArrowLeft) {
-            x -= 1;
+            moveHero(hero.moveLeft());
         } else if (key.getKeyType()== KeyType.ArrowRight) {
-            x += 1;
+            moveHero(hero.moveRight());
         }
         System.out.println(key);
     }
-
-
 
     public Game() throws IOException {
          /*
@@ -41,6 +41,7 @@ public class Game {
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory().setInitialTerminalSize(terminalSize);
         Terminal terminal = terminalFactory.createTerminal();
         */
+
         try {
             screen.setCursorPosition(null); // we don't need a cursor
             screen.startScreen(); // screens must be started
@@ -53,17 +54,17 @@ public class Game {
     private void draw() throws IOException {
 
         screen.clear();
-        screen.setCharacter(10, 10, TextCharacter.fromCharacter('X')[0]);
+        hero.draw(screen);
         screen.refresh();
     }
     public void run() throws IOException {
         draw();
-        KeyStroke key= screen.readInput();;
+        KeyStroke key= screen.readInput();
         while(key.getKeyType()!=KeyType.EOF) {
             if (key.getKeyType() == KeyType.Character && key.getCharacter()=='q') break;
             processKey(key);
             screen.clear();
-            screen.setCharacter(x, y, TextCharacter.fromCharacter('X')[0]);
+            hero.draw(screen);
             screen.refresh();
             key = screen.readInput();
         }
