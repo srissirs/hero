@@ -14,8 +14,9 @@ import java.io.IOException;
 
 public class Arena {
 
-    private int width;
-    private int height;
+
+    private final int width;
+    private final int height;
     final private Hero hero = new Hero(10,10);
 
     Arena(int width, int height){
@@ -23,11 +24,22 @@ public class Arena {
         this.height=height;
     }
 
-    public void draw(Screen screen) {
-        hero.draw(screen);
+    public void draw(TextGraphics graphics) {
+        hero.draw(graphics);
     }
+
+    public int getWidth(){
+        return width;
+    }
+
+    public int getHeight(){
+        return height;
+    }
+
+
+
    public boolean canHeroMove(Position position){
-       return position.getX() <= width && position.getY() <= height;
+        return (position.getX()>=0 && position.getX() <= width) && (position.getY() <= height && position.getY() >=0);
    }
 
     private void moveHero(Position position) {

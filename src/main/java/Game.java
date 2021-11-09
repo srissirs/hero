@@ -1,6 +1,7 @@
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextCharacter;
+import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
@@ -10,11 +11,13 @@ import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 
+
 import java.io.IOException;
 
 
 public class Game {
     final private Terminal terminal = new DefaultTerminalFactory().createTerminal();
+
     final public Screen screen = new TerminalScreen(terminal);
     final private Hero hero = new Hero(10,10);
     final private Arena arena = new Arena(15,15);
@@ -24,6 +27,9 @@ public class Game {
     private void processKey(KeyStroke key) {
         arena.processKey(key);
     }
+    public TextGraphics graphics = screen.newTextGraphics();
+
+
 
 
     public Game() throws IOException {
@@ -37,30 +43,36 @@ public class Game {
             screen.setCursorPosition(null); // we don't need a cursor
             screen.startScreen(); // screens must be started
             screen.doResizeIfNecessary(); // resize screen if necessary
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+
     private void draw() throws IOException {
 
         screen.clear();
-        arena.draw(screen);
+        graphics.setBackgroundColor(TextColor.Factory.fromString("#336699"));
+        graphics.fillRectangle(new TerminalPosition(0, 0), new TerminalSize(arena.getWidth(), arena.getHeight()), ' ');
+        arena.draw(screen.newTextGraphics());
         screen.refresh();
     }
+
+
     public void run() throws IOException {
         draw();
         KeyStroke key= screen.readInput();
         while(key.getKeyType()!=KeyType.EOF) {
             if (key.getKeyType() == KeyType.Character && key.getCharacter()=='q') break;
             processKey(key);
-            screen.clear();
-            arena.draw(screen);
-            screen.refresh();
+            draw();
             key = screen.readInput();
         }
         screen.close();
     }
+
+
 
 }
 
