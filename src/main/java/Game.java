@@ -17,20 +17,16 @@ import java.io.IOException;
 
 public class Game {
     final private Terminal terminal = new DefaultTerminalFactory().createTerminal();
-
     final public Screen screen = new TerminalScreen(terminal);
-    final private Hero hero = new Hero(10,10);
     final private Arena arena = new Arena(15,15);
+    public TextGraphics graphics = screen.newTextGraphics();
+
+    /*
     private void moveHero(Position position) {
         hero.setPosition(position);
     }
-    private void processKey(KeyStroke key) {
-        arena.processKey(key);
-    }
-    public TextGraphics graphics = screen.newTextGraphics();
 
-
-
+     */
 
     public Game() throws IOException {
          /*
@@ -65,7 +61,7 @@ public class Game {
         KeyStroke key= screen.readInput();
         while(key.getKeyType()!=KeyType.EOF) {
             if (key.getKeyType() == KeyType.Character && key.getCharacter()=='q') break;
-            processKey(key);
+            arena.processKey(key);
             draw();
             key = screen.readInput();
         }
